@@ -1,0 +1,38 @@
+package:
+  name: flightdata
+  version: "0.0.1"
+
+build:
+  number: 0
+
+source:
+  path: ./
+
+requirements:
+  build:
+    - python
+    - setuptools
+  host:
+    - future
+    - lxml
+    - pip
+    - python
+    - numpy
+    - pandas
+    - inav_log_reader
+    - ardupilot_log_reader
+    - geometry
+    - pint
+  run:
+    - future
+    - lxml
+    - python
+    - numpy
+    - pandas
+    - inav_log_reader
+    - ardupilot_log_reader
+    - geometry
+    - pint
+test:
+  imports:
+    - flightdata
