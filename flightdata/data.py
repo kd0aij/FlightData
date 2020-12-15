@@ -37,8 +37,8 @@ def _read_ardupilot(log_file: str) -> (Ardupilot, pd.DataFrame):
         Ardupilot: the parser object containing the raw data as described in ./mapping
         DataFrame: a DataFrame containing the transformed data to the fields and units defined in ./fields.py
     """
-    _field_request = ['ARSP', 'ATT', 'BARO', 'GPS', 'IMU',
-                      'RCIN', 'RCOU', 'BAT', 'MODE', 'NKF1', 'STAT', 'XKF1']
+    _field_request = ['ARSP', 'BARO', 'GPS', 'RCIN', 'RCOU', 'IMU',
+                      'BAT', 'BAT2', 'MODE', 'NKF1', 'NKF2', 'XKF1', 'XKF2']
     _parser = Ardupilot(log_file, types=_field_request, zero_time_base=True)
     fulldf = _parser.join_logs(_field_request)
 
@@ -57,7 +57,7 @@ def _read_ardupilot(log_file: str) -> (Ardupilot, pd.DataFrame):
     # add the missing tool columns
     missing_cols = pd.DataFrame(
         columns=list(set(Fields.all_names()) -
-                     set(_data.columns.to_list()))+[Fields.TIME.names[0]]
+                     set(_data.columns.to_list())) + [Fields.TIME.names[0]]
     )
     output_data = _data.merge(
         missing_cols, on=Fields.TIME.names[0], how='left')

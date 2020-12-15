@@ -24,8 +24,8 @@ log_field_map = dict()
 #log_field_map["loopIteration"] = MappedField(Fields.LOOPITERATION, 0, "loopIteration", 1)
 log_field_map["timestamp"] = MappedField(
     Fields.TIME, 0, "timestamp", ureg.second)
-log_field_map["ATTTimeUS"] = MappedField(
-    Fields.TIME, 1, "ATTTimeUS", ureg.microsecond)
+log_field_map["XKF1TimeUS"] = MappedField(
+    Fields.TIME, 1, "XKF1TimeUS", ureg.microsecond)
 
 
 #TXCONTROLS = Field('tx_controls', ureg.second, 6, description='PWM Values coming from the TX')
@@ -70,10 +70,10 @@ log_field_map["MODERsn"] = MappedField(Fields.FLIGHTMODE, 2, "MODERsn", 1)
 
 #EKFPOSITION = Field('ekf_position', ureg.radians, 3, description='position of plane in cartesian coordinates (s, e, u)', names=['x', 'y', 'z'])
 log_field_map["XKF1PN"] = MappedField(
-    Fields.POSITION, 0, "XKF1PN", ureg.meter * -1)
+    Fields.POSITION, 0, "XKF1PN", ureg.meter)
 log_field_map["XKF1PE"] = MappedField(Fields.POSITION, 1, "XKF1PE", ureg.meter)
 log_field_map["XKF1PD"] = MappedField(
-    Fields.POSITION, 2, "XKF1PD", ureg.meter * -1)
+    Fields.POSITION, 2, "XKF1PD", ureg.meter)
 
 #GLOBALPOSITION = Field('global_position', ureg.degrees, 3, names=['latitude', 'longitude', 'altitude'])
 log_field_map["GPSLat"] = MappedField(
@@ -97,19 +97,21 @@ log_field_map["XKF1Pitch"] = MappedField(
 log_field_map["XKF1Yaw"] = MappedField(
     Fields.ATTITUDE, 2, "XKF1Yaw", ureg.degree)
 # GYR1
-log_field_map["IMUGyrX"] = MappedField(
-    Fields.AXISRATE, 0, "IMUGyrX", ureg.degree / ureg.second)
-log_field_map["IMUGyrY"] = MappedField(
-    Fields.AXISRATE, 1, "IMUGyrY", ureg.degree / ureg.second)
-log_field_map["IMUGyrZ"] = MappedField(
-    Fields.AXISRATE, 2, "IMUGyrZ", ureg.degree / ureg.second)
+log_field_map["XKF1GX"] = MappedField(
+    Fields.AXISRATE, 0, "XKF1GX", ureg.degree / ureg.second)
+log_field_map["XKF1GY"] = MappedField(
+    Fields.AXISRATE, 1, "XKF1GY", ureg.degree / ureg.second)
+log_field_map["XKF1GZ"] = MappedField(
+    Fields.AXISRATE, 2, "XKF1GZ", ureg.degree / ureg.second)
 
 #BATTERY = Field('battery', ureg.volt, 2, description='battery voltages')
 log_field_map["BATVolt"] = MappedField(Fields.BATTERY, 0, "BATVolt", ureg.V)
+log_field_map["BAT2Volt"] = MappedField(Fields.BATTERY, 1, "BAT2Volt", ureg.V)
 #log_field_map["sagCompensatedVBat"] = MappedField(Fields.BATTERY, 1, "sagCompensatedVBat", ureg.centiV)
 
 #CURRENT = Field('current', ureg.amp, 4, description='motor currents')
 log_field_map["BATCurr"] = MappedField(Fields.CURRENT, 0, "BATCurr", ureg.A)
+log_field_map["BAT2Curr"] = MappedField(Fields.CURRENT, 1, "BAT2Curr", ureg.A)
 
 log_field_map["ARSPAirspeed"] = MappedField(
     Fields.AIRSPEED, 0, "ARSPAirspeed", ureg.meter / ureg.second)
@@ -121,12 +123,16 @@ log_field_map["IMUAccY"] = MappedField(
 log_field_map["IMUAccZ"] = MappedField(
     Fields.ACCELERATION, 2, "IMUAccZ", ureg.meter / ureg.second / ureg.second)
 
-log_field_map["NKF1VN"] = MappedField(
-    Fields.VELOCITY, 0, "NKF1VN", ureg.meter * -1 / ureg.second)
-log_field_map["NKF1VE"] = MappedField(
-    Fields.VELOCITY, 1, "NKF1VE", ureg.meter / ureg.second)
-log_field_map["NKF1VD"] = MappedField(
-    Fields.VELOCITY, 2, "NKF1VD", ureg.meter * -1 / ureg.second)
+log_field_map["XKF1VN"] = MappedField(
+    Fields.VELOCITY, 0, "XKF1VN", ureg.meter / ureg.second)
+log_field_map["XKF1VE"] = MappedField(
+    Fields.VELOCITY, 1, "XKF1VE", ureg.meter / ureg.second)
+log_field_map["XKF1VD"] = MappedField(
+    Fields.VELOCITY, 2, "XKF1VD", ureg.meter / ureg.second)
 
+log_field_map["XKF2VWN"] = MappedField(
+    Fields.WIND, 0, "XKF2VWN", ureg.meter / ureg.second)
+log_field_map["XKF2VWE"] = MappedField(
+    Fields.WIND, 1, "XKF2VWE", ureg.meter / ureg.second)
 
 ardupilot_ekfv3_io_info = FieldIOInfo(log_field_map)

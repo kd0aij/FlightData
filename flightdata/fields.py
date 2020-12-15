@@ -67,14 +67,14 @@ class Fields(object):
     SERVOS = Field('servos', ureg.second, 8,
                    description='PWN Values going to the Servos')
     FLIGHTMODE = Field('mode', 1, 3, description='The active flight mode ID')
-    POSITION = Field('ekf_position', ureg.meter, 3,
-                     description='position of plane in cartesian coordinates (s, e, u)', names=['x', 'y', 'z'])
+    POSITION = Field('position', ureg.meter, 3,
+                     description='position of plane in cartesian coordinates (n, e, d)', names=['x', 'y', 'z'])
     GLOBALPOSITION = Field('global_position', ureg.degree,
                            2, names=['latitude', 'longitude'])
     GPSSATCOUNT = Field('gps_sat_count', 1, 1,
                         description='number of satellites')
     SENSORALTITUDE = Field('altitude', ureg.meters, 2, names=['gps', 'baro'])
-    ATTITUDE = Field('ekf_attitude', ureg.radian, 3,
+    ATTITUDE = Field('attitude', ureg.radian, 3,
                      description='euler angles, order = yaw, pitch, roll', names=['roll', 'pitch', 'yaw'])
     AXISRATE = Field('axis_rate', ureg.radian / ureg.second, 3,
                      description='rotational velocities', names=['roll', 'pitch', 'yaw'])
@@ -83,9 +83,11 @@ class Fields(object):
     AIRSPEED = Field('airspeed', ureg.meter / ureg.second,
                      2, description='sensor airspeed')
     ACCELERATION = Field('acceleration', ureg.meter / ureg.second / ureg.second,
-                         3, description='accelerations (body frame)', names=['x', 'y', 'z'])
+                         3, description='accelerations (earth frame)', names=['x', 'y', 'z'])
     VELOCITY = Field('velocity', ureg.meter / ureg.second, 3,
-                     description='velocity data (earth frame)', names=['south', 'east', 'up'])
+                     description='velocity data (earth frame)', names=['x', 'y', 'z'])
+    WIND = Field('wind', ureg.meter / ureg.second, 2,
+                 description='wind in earth frame', names=['x', 'y'])
 
     @staticmethod
     def all():

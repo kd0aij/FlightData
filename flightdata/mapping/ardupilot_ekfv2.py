@@ -24,8 +24,8 @@ log_field_map = dict()
 #log_field_map["loopIteration"] = MappedField(Fields.LOOPITERATION, 0, "loopIteration", 1)
 log_field_map["timestamp"] = MappedField(
     Fields.TIME, 0, "timestamp", ureg.second)
-log_field_map["ATTTimeUS"] = MappedField(
-    Fields.TIME, 1, "ATTTimeUS", ureg.microsecond)
+log_field_map["NKF1TimeUS"] = MappedField(
+    Fields.TIME, 1, "NKF1TimeUS", ureg.microsecond)
 
 
 #TXCONTROLS = Field('tx_controls', ureg.second, 6, description='PWM Values coming from the TX')
@@ -69,11 +69,9 @@ log_field_map["MODEModeNum"] = MappedField(
 log_field_map["MODERsn"] = MappedField(Fields.FLIGHTMODE, 2, "MODERsn", 1)
 
 #EKFPOSITION = Field('ekf_position', ureg.radians, 3, description='position of plane in cartesian coordinates (s, e, u)', names=['x', 'y', 'z'])
-log_field_map["NKF1PN"] = MappedField(
-    Fields.POSITION, 0, "NKF1PN", ureg.meter * -1)
+log_field_map["NKF1PN"] = MappedField(Fields.POSITION, 0, "NKF1PN", ureg.meter)
 log_field_map["NKF1PE"] = MappedField(Fields.POSITION, 1, "NKF1PE", ureg.meter)
-log_field_map["NKF1PD"] = MappedField(
-    Fields.POSITION, 2, "NKF1PD", ureg.meter * -1)
+log_field_map["NKF1PD"] = MappedField(Fields.POSITION, 2, "NKF1PD", ureg.meter)
 
 #GLOBALPOSITION = Field('global_position', ureg.degrees, 3, names=['latitude', 'longitude', 'altitude'])
 log_field_map["GPSLat"] = MappedField(
@@ -115,10 +113,16 @@ log_field_map["IMUAccZ"] = MappedField(
     Fields.ACCELERATION, 2, "IMUAccZ", ureg.meter / ureg.second / ureg.second)
 
 log_field_map["NKF1VN"] = MappedField(
-    Fields.VELOCITY, 0, "NKF1VN", ureg.meter * -1 / ureg.second)
+    Fields.VELOCITY, 0, "NKF1VN", ureg.meter / ureg.second)
 log_field_map["NKF1VE"] = MappedField(
     Fields.VELOCITY, 1, "NKF1VE", ureg.meter / ureg.second)
 log_field_map["NKF1VD"] = MappedField(
-    Fields.VELOCITY, 2, "NKF1VD", ureg.meter * -1 / ureg.second)
+    Fields.VELOCITY, 2, "NKF1VD", ureg.meter / ureg.second)
+
+
+log_field_map["NKF2VWN"] = MappedField(
+    Fields.WIND, 0, "NKF2VWN", ureg.meter / ureg.second)
+log_field_map["NKF2VWE"] = MappedField(
+    Fields.WIND, 1, "XKF2VWE", ureg.meter / ureg.second)
 
 ardupilot_ekfv2_io_info = FieldIOInfo(log_field_map)
