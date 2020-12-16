@@ -103,6 +103,9 @@ class Flight(object):
     def read_fields(self, fields):
         return self.data[Fields.some_names(fields)]
 
+    def read_field_tuples(self, fields):
+        return tuple(self.read_fields(fields).transpose().to_numpy())
+
     def origin(self) -> Dict[str, float]:
         """the latitude and longitude of the home position
 
