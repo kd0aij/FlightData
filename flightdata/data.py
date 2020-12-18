@@ -9,7 +9,6 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/>.
 """
-import unittest
 from typing import List, Dict
 import numpy as np
 import pandas as pd
@@ -18,7 +17,7 @@ from enum import Enum
 
 from ardupilot_log_reader.reader import Ardupilot
 
-from flightdata.fields import Fields
+from flightdata.fields import Fields, CIDTypes
 from flightdata.mapping import get_ardupilot_mapping
 
 
@@ -104,6 +103,8 @@ class Flight(object):
         return self.data[Fields.some_names(fields)]
 
     def read_field_tuples(self, fields):
+        #res = self.read_fields(fields).transpose().to_numpy()
+
         return tuple(self.read_fields(fields).transpose().to_numpy())
 
     def origin(self) -> Dict[str, float]:
@@ -152,26 +153,23 @@ class Flight(object):
             zero_time_offset=self.zero_time
         )
 
+    def transform(self, transforms):
+        '''Return a new Flight class transformed by the dict of functions passed.
+        Each key represents an ID from CIDTypes, each value a function to transform that type.
+        the functions are vectorized
+        '''
+        df = pd.DataFrame(columns=Fields.all_names())
+        for field in Fields.all():
+            if field.length == 1:
+                tempdf = pd.DataFrame(transforms[field.cid_type](
+                    self.read_field_tuples(field)[0])).transpose()
+            else:
+                tempdf = pd.DataFrame(np.vectorize(transforms[field.cid_type])(
+                    *self.read_field_tuples(field))).transpose()
+            tempdf.columns = field.names
+            df[field.names] = tempdf
 
-class TestFlightData(unittest.TestCase):
-    def setUp(self):
-        self.flight = Flight.from_log('test/ekfv3_test.BIN')
-
-    def test_duration(self):
-        self.assertAlmostEqual(self.flight.duration, 278.923721)
-
-    def test_read_closest(self):
-        self.assertAlmostEqual(
-            self.flight.read_closest(Fields.TIME.names, 220)[
-                0] - self.flight.zero_time,
-            220,
-            0)
-
-    def test_slice(self):
-        short_flight = self.flight.subset(100, 200)
-        self.assertAlmostEqual(short_flight.duration, 100, 0)
-
-
-if __name__ == "__main__":
-
-    unittest.main()
+        return Flight(
+            data=df.set_index(Fields.TIME.names[0]),
+            parameters=self.parameters,
+            zero_time_offset=self.zero_time)

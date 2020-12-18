@@ -11,7 +11,6 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from enum import Enum
 from pint import UnitRegistry, DimensionalityError
 from typing import Dict, List
 ureg = UnitRegistry()
@@ -20,73 +19,71 @@ ureg = UnitRegistry()
 _field_list = []
 
 
+class CIDTypes():
+    CARTESIAN = 0
+    EULER = 1
+    BODY = 2
+    NA = 3
+    GPS = 4
+    ZONLY = 5
+    XY = 6
+
+
 class Field(object):
-    def __init__(self, name, unit, length, description='', names=[]):
-        self._name = name
-        self._unit = unit
-        self._length = length
-        self._description = description
-        self._names = self._make_names(names)
+    def __init__(self, name: str, unit: ureg.Unit, length: int, cid_type: int = 3, description: str = '', names: List[str] = []):
+        self.name = name
+        self.unit = unit
+        self.length = length
+        self.cid_type = cid_type
+        self.description = description
+        self.names = Field._make_names(self.name, names, length)
         _field_list.append(self)
 
-    @property
-    def name(self):
-        return self._name
-
-    def _make_names(self, names):
+    @staticmethod
+    def _make_names(name, names, length):
         _out_names = []
-        for i in range(0, self._length):
+        for i in range(0, length):
             if i < len(names):
-                _out_names.append(self._name + '_' + names[i])
+                _out_names.append(name + '_' + names[i])
             else:
-                _out_names.append(self._name + '_' + str(i))
+                _out_names.append(name + '_' + str(i))
         return _out_names
-
-    @property
-    def names(self):
-        return self._names
-
-    def length(self):
-        return self._length
-
-    @property
-    def description(self):
-        return self._description
-
-    @property
-    def unit(self):
-        return self._unit
 
 
 class Fields(object):
     """This class defines the fields. Do not instantiate.
     """
-    TIME = Field('time', ureg.second, 2, names=['flight', 'actual'])
-    TXCONTROLS = Field('tx_controls', ureg.second, 8,
+    TIME = Field('time', ureg.second, 2, CIDTypes.NA,
+                 names=['flight', 'actual'])
+    TXCONTROLS = Field('tx_controls', ureg.second, 8, CIDTypes.NA,
                        description='PWM Values coming from the TX')
-    SERVOS = Field('servos', ureg.second, 8,
+    SERVOS = Field('servos', ureg.second, 8, CIDTypes.NA,
                    description='PWN Values going to the Servos')
-    FLIGHTMODE = Field('mode', 1, 3, description='The active flight mode ID')
-    POSITION = Field('position', ureg.meter, 3,
-                     description='position of plane in cartesian coordinates (n, e, d)', names=['x', 'y', 'z'])
+    FLIGHTMODE = Field('mode', 1, 3, CIDTypes.NA,
+                       description='The active flight mode ID')
+    POSITION = Field('position', ureg.meter, 3, CIDTypes.CARTESIAN,
+                     description='position of plane (n, e, d)', names=['x', 'y', 'z'])
     GLOBALPOSITION = Field('global_position', ureg.degree,
-                           2, names=['latitude', 'longitude'])
-    GPSSATCOUNT = Field('gps_sat_count', 1, 1,
+                           2, CIDTypes.GPS, names=['latitude', 'longitude'])
+    GPSSATCOUNT = Field('gps_sat_count', 1, 1, CIDTypes.NA,
                         description='number of satellites')
-    SENSORALTITUDE = Field('altitude', ureg.meters, 2, names=['gps', 'baro'])
-    ATTITUDE = Field('attitude', ureg.radian, 3,
+    SENSORALTITUDE = Field('altitude', ureg.meters, 2,
+                           CIDTypes.ZONLY, names=['gps', 'baro'])
+    ATTITUDE = Field('attitude', ureg.radian, 3, CIDTypes.EULER,
                      description='euler angles, order = yaw, pitch, roll', names=['roll', 'pitch', 'yaw'])
-    AXISRATE = Field('axis_rate', ureg.radian / ureg.second, 3,
+    AXISRATE = Field('axis_rate', ureg.radian / ureg.second, 3, CIDTypes.BODY,
                      description='rotational velocities', names=['roll', 'pitch', 'yaw'])
-    BATTERY = Field('battery', ureg.volt, 2, description='battery voltages')
-    CURRENT = Field('current', ureg.amp, 4, description='motor currents')
+    BATTERY = Field('battery', ureg.volt, 2, CIDTypes.NA,
+                    description='battery voltages')
+    CURRENT = Field('current', ureg.amp, 4, CIDTypes.NA,
+                    description='motor currents')
     AIRSPEED = Field('airspeed', ureg.meter / ureg.second,
-                     2, description='sensor airspeed')
+                     2, CIDTypes.NA, description='sensor airspeed')
     ACCELERATION = Field('acceleration', ureg.meter / ureg.second / ureg.second,
-                         3, description='accelerations (earth frame)', names=['x', 'y', 'z'])
-    VELOCITY = Field('velocity', ureg.meter / ureg.second, 3,
+                         3, CIDTypes.CARTESIAN, description='accelerations (earth frame)', names=['x', 'y', 'z'])
+    VELOCITY = Field('velocity', ureg.meter / ureg.second, 3, CIDTypes.CARTESIAN,
                      description='velocity data (earth frame)', names=['x', 'y', 'z'])
-    WIND = Field('wind', ureg.meter / ureg.second, 2,
+    WIND = Field('wind', ureg.meter / ureg.second, 2, CIDTypes.XY,
                  description='wind in earth frame', names=['x', 'y'])
 
     @staticmethod
@@ -187,7 +184,3 @@ class FieldIOInfo(object):
 
     def subset(self, less_base_names):
         return FieldIOInfo({x: self._field_maps[x] for x in less_base_names if x in self._field_maps})
-
-
-if __name__ == "__main__":
-    print(Fields.all_names())
