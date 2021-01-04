@@ -37,7 +37,7 @@ def _read_ardupilot(log_file: str) -> (Ardupilot, pd.DataFrame):
         DataFrame: a DataFrame containing the transformed data to the fields and units defined in ./fields.py
     """
     _field_request = ['ARSP', 'BARO', 'GPS', 'RCIN', 'RCOU', 'IMU',
-                      'BAT', 'BAT2', 'MODE', 'NKF1', 'NKF2', 'XKF1', 'XKF2']
+                      'BAT', 'BAT2', 'MODE', 'NKF1', 'NKF2', 'XKF1', 'XKF2', 'RPM']
     _parser = Ardupilot(log_file, types=_field_request, zero_time_base=True)
     fulldf = _parser.join_logs(_field_request)
 
@@ -75,7 +75,7 @@ class Flight(object):
         self.data.index = self.data.index - self.data.index[0]
 
     @staticmethod
-    def from_log(log_path, box=None):
+    def from_log(log_path):
         _parser, data = _read_ardupilot(log_path)
         return Flight(data, _parser.parms)
 

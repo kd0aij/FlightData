@@ -85,6 +85,8 @@ class Fields(object):
                      description='velocity data (earth frame)', names=['x', 'y', 'z'])
     WIND = Field('wind', ureg.meter / ureg.second, 2, CIDTypes.XY,
                  description='wind in earth frame', names=['x', 'y'])
+    RPM = Field('rpm', 1 / ureg.minute, 2, CIDTypes.NA,
+                description='motor rpm')
 
     @staticmethod
     def all():

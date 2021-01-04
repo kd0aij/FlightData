@@ -135,4 +135,10 @@ log_field_map["XKF2VWN"] = MappedField(
 log_field_map["XKF2VWE"] = MappedField(
     Fields.WIND, 1, "XKF2VWE", ureg.meter / ureg.second)
 
+log_field_map["RPMrpm1"] = MappedField(
+    Fields.RPM, 0, "RPMrpm1", 14 / ureg.minute)
+log_field_map["RPMrpm2"] = MappedField(
+    Fields.RPM, 1, "RPMrpm2", 14 / ureg.minute)
+
+
 ardupilot_ekfv3_io_info = FieldIOInfo(log_field_map)
