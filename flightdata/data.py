@@ -9,7 +9,7 @@ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 this program. If not, see <http://www.gnu.org/licenses/>.
 """
-from typing import List, Dict
+from typing import List, Dict, Union
 import numpy as np
 import pandas as pd
 from importlib.util import find_spec
@@ -21,52 +21,6 @@ from flightdata.fields import Fields, CIDTypes
 from flightdata.mapping import get_ardupilot_mapping
 
 
-def _read_ardupilot(log_file: str) -> (Ardupilot, pd.DataFrame):
-    """reads an ardupilot bin file to a Pandas Dataframe.
-    fields are renamed and units converted to the tool fields defined in ./fields.py
-    The input fields, read from the log are specified in ./mapping 
-
-    Args:
-        log_file (str): [description]
-
-    Raises:
-        IOError: [description]
-
-    Returns:
-        Ardupilot: the parser object containing the raw data as described in ./mapping
-        DataFrame: a DataFrame containing the transformed data to the fields and units defined in ./fields.py
-    """
-    _field_request = ['ARSP', 'BARO', 'GPS', 'RCIN', 'RCOU', 'IMU',
-                      'BAT', 'BAT2', 'MODE', 'NKF1', 'NKF2', 'XKF1', 'XKF2', 'RPM']
-    _parser = Ardupilot(log_file, types=_field_request, zero_time_base=True)
-    fulldf = _parser.join_logs(_field_request)
-
-    ardupilot_io_info = get_ardupilot_mapping(_parser.parms['AHRS_EKF_TYPE'])
-
-    # expand the dataframe to include all the columns listed in the io_info instance
-    input_data = fulldf.get(list(set(fulldf.columns.to_list())
-                                 & set(ardupilot_io_info.io_names)))
-
-    # Generate a reordered io instance to match the columns in the dataframe
-    _fewer_io_info = ardupilot_io_info.subset(input_data.columns.to_list())
-
-    _data = input_data * _fewer_io_info.factors_to_base  # do the unit conversion
-    _data.columns = _fewer_io_info.base_names  # rename the columns
-
-    # add the missing tool columns
-    missing_cols = pd.DataFrame(
-        columns=list(set(Fields.all_names()) -
-                     set(_data.columns.to_list())) + [Fields.TIME.names[0]]
-    )
-    output_data = _data.merge(
-        missing_cols, on=Fields.TIME.names[0], how='left')
-
-    # set the first time in the index to 0
-    output_data.index = _data[Fields.TIME.names[0]].copy()
-    output_data.index.name = 'time_index'
-    return _parser, output_data.loc[pd.isna(output_data['time_actual']) == False]
-
-
 class Flight(object):
     def __init__(self, data, parameters: List = None, zero_time_offset: float = 0):
         self.data = data
@@ -76,8 +30,51 @@ class Flight(object):
 
     @staticmethod
     def from_log(log_path):
-        _parser, data = _read_ardupilot(log_path)
-        return Flight(data, _parser.parms)
+        """Constructor from an ardupilot bin file.
+            fields are renamed and units converted to the tool fields defined in ./fields.py
+            The input fields, read from the log are specified in ./mapping 
+
+            Args:
+                log_path (str): [description]
+
+            Returns:
+                Flight
+        """
+        _field_request = ['ARSP', 'BARO', 'GPS', 'RCIN', 'RCOU', 'IMU',
+                        'BAT', 'BAT2', 'MODE', 'NKF1', 'NKF2', 'XKF1', 'XKF2', 'RPM']
+        _parser = Ardupilot(log_path, types=_field_request, zero_time_base=True)
+        fulldf = _parser.join_logs(_field_request)
+
+        ardupilot_io_info = get_ardupilot_mapping(_parser.parms['AHRS_EKF_TYPE'])
+
+        # expand the dataframe to include all the columns listed in the io_info instance
+        input_data = fulldf.get(list(set(fulldf.columns.to_list())
+                                    & set(ardupilot_io_info.io_names)))
+
+        # Generate a reordered io instance to match the columns in the dataframe
+        _fewer_io_info = ardupilot_io_info.subset(input_data.columns.to_list())
+
+        _data = input_data * _fewer_io_info.factors_to_base  # do the unit conversion
+        _data.columns = _fewer_io_info.base_names  # rename the columns
+
+        # add the missing tool columns
+        missing_cols = pd.DataFrame(
+            columns=list(set(Fields.all_names()) -
+                        set(_data.columns.to_list())) + [Fields.TIME.names[0]]
+        )
+        output_data = _data.merge(
+            missing_cols, on=Fields.TIME.names[0], how='left')
+
+        #find the time 3 seconds after the magnetometer has initialised
+        first_good_time = output_data.loc[pd.isna(output_data['magnetometer_0']) == False].loc[output_data['magnetometer_0'] != 0].iloc[0].time_flight + 3
+
+        #TODO add a check for GPS Sat count here perhaps
+
+        # set the first time in the index to 0
+        output_data.index = _data[Fields.TIME.names[0]].copy()
+        output_data.index.name = 'time_index'
+
+        return Flight(output_data.loc[first_good_time:], _parser.parms)
 
     @property
     def duration(self):
@@ -106,6 +103,7 @@ class Flight(object):
         #res = self.read_fields(fields).transpose().to_numpy()
 
         return tuple(self.read_fields(fields).transpose().to_numpy())
+
 
     def origin(self) -> Dict[str, float]:
         """the latitude and longitude of the home position
