@@ -11,7 +11,7 @@ this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 
-from flightdata.fields import Fields, MappedField, FieldIOInfo
+from flightdata.fields import Field, Fields, MappedField, FieldIOInfo
 from pint import UnitRegistry
 
 ureg = UnitRegistry()
@@ -140,5 +140,8 @@ log_field_map["RPMrpm1"] = MappedField(
 log_field_map["RPMrpm2"] = MappedField(
     Fields.RPM, 1, "RPMrpm2", 14 / ureg.minute)
 
+log_field_map['XKF2MN'] = MappedField(Fields.MAGNETOMETER, 0, "XKF2MN", 1)
+log_field_map['XKF2ME'] = MappedField(Fields.MAGNETOMETER, 1, "XKF2ME", 1)
+log_field_map['XKF2MD'] = MappedField(Fields.MAGNETOMETER, 2, "XKF2MD", 1)
 
 ardupilot_ekfv3_io_info = FieldIOInfo(log_field_map)

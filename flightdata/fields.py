@@ -87,7 +87,8 @@ class Fields(object):
                  description='wind in earth frame', names=['x', 'y'])
     RPM = Field('rpm', 1 / ureg.minute, 2, CIDTypes.NA,
                 description='motor rpm')
-
+    MAGNETOMETER = Field('magnetometer', 1, 3, CIDTypes.CARTESIAN, description='mag field strength n, e, d')
+    
     @staticmethod
     def all():
         return _field_list
