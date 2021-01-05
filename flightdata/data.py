@@ -28,6 +28,17 @@ class Flight(object):
         self.zero_time = self.data.index[0] + zero_time_offset
         self.data.index = self.data.index - self.data.index[0]
 
+    def to_csv(self, filename):
+        self.data.to_csv(filename)
+    
+    @staticmethod
+    def from_csv(filename):
+        data = pd.read_csv(filename)
+        data.index = data[Fields.TIME.names[0]].copy()
+        data.index.name = 'time_index'
+
+        return Flight(data)
+
     @staticmethod
     def from_log(log_path):
         """Constructor from an ardupilot bin file.

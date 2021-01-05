@@ -1,11 +1,11 @@
 import unittest
 from flightdata.fields import Fields
 from flightdata.data import Flight
-
+import os
 
 class TestFlightData(unittest.TestCase):
     def setUp(self):
-        self.flight = Flight.from_log('test/ekfv3_test.BIN')
+        self.flight = Flight.from_csv('test/ekfv3_test.csv')
 
     def test_duration(self):
         self.assertAlmostEqual(self.flight.duration, 601, 0)
@@ -28,7 +28,12 @@ class TestFlightData(unittest.TestCase):
         flightcopy = self.flight.transform(funcdict)
         self.assertAlmostEqual(flightcopy.duration, 601, 0)
 
+    @unittest.skip("reading log from bin takes a bit longer")
+    def test_to_from_csv(self):
+        flight = Flight.from_log('test/ekfv3_test.BIN')
+        flight.to_csv('temp.csv')
+        flight2 = Flight.from_csv('temp.csv')
+        os.remove('temp.csv')
+        self.assertEqual(flight2.duration, flight.duration)
+        self.assertEqual(flight2.zero_time, flight.zero_time)
 
-if __name__ == "__main__":
-
-    unittest.main()
