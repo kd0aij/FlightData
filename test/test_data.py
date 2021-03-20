@@ -24,7 +24,6 @@ class TestFlightData(unittest.TestCase):
 
     def test_transform(self):
         funcdict = {i: lambda *x: x for i in range(0, 7)}
-
         flightcopy = self.flight.transform(funcdict)
         self.assertAlmostEqual(flightcopy.duration, 601, 0)
 
@@ -37,3 +36,7 @@ class TestFlightData(unittest.TestCase):
         self.assertEqual(flight2.duration, flight.duration)
         self.assertEqual(flight2.zero_time, flight.zero_time)
 
+    @unittest.skip("reading log from bin takes a bit longer")
+    def test_missing_arsp(self):
+        flight = Flight.from_log('test/00000150.BIN')
+        self.assertGreater(flight.duration, 500)
