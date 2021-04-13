@@ -40,7 +40,7 @@ class Flight(object):
         return Flight(data)
 
     @staticmethod
-    def from_log(log_path):
+    def from_log(log_path, skip_start=True):
         """Constructor from an ardupilot bin file.
             fields are renamed and units converted to the tool fields defined in ./fields.py
             The input fields, read from the log are specified in ./mapping 
@@ -77,8 +77,10 @@ class Flight(object):
             missing_cols, on=Fields.TIME.names[0], how='left')
 
         #find the time 3 seconds after the magnetometer has initialised
-        first_good_time = output_data.loc[pd.isna(output_data['magnetometer_0']) == False].loc[output_data['magnetometer_0'] != 0].iloc[0].time_flight + 3
-
+        if skip_start:
+            first_good_time = output_data.loc[pd.isna(output_data['magnetometer_0']) == False].loc[output_data['magnetometer_0'] != 0].iloc[0].time_flight + 3
+        else:
+            first_good_time = output_data.iloc[0].time_flight
         #TODO add a check for GPS Sat count here perhaps
 
         # set the first time in the index to 0
