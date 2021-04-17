@@ -97,12 +97,12 @@ log_field_map["XKF1Pitch"] = MappedField(
 log_field_map["XKF1Yaw"] = MappedField(
     Fields.ATTITUDE, 2, "XKF1Yaw", ureg.degree)
 # GYR1
-log_field_map["XKF1GX"] = MappedField(
-    Fields.AXISRATE, 0, "XKF1GX", ureg.degree / ureg.second)
-log_field_map["XKF1GY"] = MappedField(
-    Fields.AXISRATE, 1, "XKF1GY", ureg.degree / ureg.second)
-log_field_map["XKF1GZ"] = MappedField(
-    Fields.AXISRATE, 2, "XKF1GZ", ureg.degree / ureg.second)
+log_field_map["IMUGyrX"] = MappedField(
+    Fields.AXISRATE, 0, "IMUGyrX", ureg.degree / ureg.second)
+log_field_map["IMUGyrY"] = MappedField(
+    Fields.AXISRATE, 1, "IMUGyrY", ureg.degree / ureg.second)
+log_field_map["IMUGyrZ"] = MappedField(
+    Fields.AXISRATE, 2, "IMUGyrZ", ureg.degree / ureg.second)
 
 #BATTERY = Field('battery', ureg.volt, 2, description='battery voltages')
 log_field_map["BATVolt"] = MappedField(Fields.BATTERY, 0, "BATVolt", ureg.V)
@@ -140,8 +140,8 @@ log_field_map["RPMrpm1"] = MappedField(
 log_field_map["RPMrpm2"] = MappedField(
     Fields.RPM, 1, "RPMrpm2", 14 / ureg.minute)
 
-log_field_map['XKF2MN'] = MappedField(Fields.MAGNETOMETER, 0, "XKF2MN", 1)
-log_field_map['XKF2ME'] = MappedField(Fields.MAGNETOMETER, 1, "XKF2ME", 1)
-log_field_map['XKF2MD'] = MappedField(Fields.MAGNETOMETER, 2, "XKF2MD", 1)
+log_field_map['MAGMagX'] = MappedField(Fields.MAGNETOMETER, 0, "MAGMagX", 1)
+log_field_map['MAGMagY'] = MappedField(Fields.MAGNETOMETER, 1, "MAGMagY", 1)
+log_field_map['MAGMagZ'] = MappedField(Fields.MAGNETOMETER, 2, "MAGMagZ", 1)
 
 ardupilot_ekfv3_io_info = FieldIOInfo(log_field_map)

@@ -95,12 +95,22 @@ log_field_map["NKF1Pitch"] = MappedField(
 log_field_map["NKF1Yaw"] = MappedField(
     Fields.ATTITUDE, 2, "NKF1Yaw", ureg.degree)
 
+log_field_map["IMUGyrX"] = MappedField(
+    Fields.AXISRATE, 0, "IMUGyrX", ureg.degree / ureg.second)
+log_field_map["IMUGyrY"] = MappedField(
+    Fields.AXISRATE, 1, "IMUGyrY", ureg.degree / ureg.second)
+log_field_map["IMUGyrZ"] = MappedField(
+    Fields.AXISRATE, 2, "IMUGyrZ", ureg.degree / ureg.second)
+
+
 #BATTERY = Field('battery', ureg.volt, 2, description='battery voltages')
 log_field_map["BATVolt"] = MappedField(Fields.BATTERY, 0, "BATVolt", ureg.V)
+log_field_map["BAT2Volt"] = MappedField(Fields.BATTERY, 1, "BAT2Volt", ureg.V)
 #log_field_map["sagCompensatedVBat"] = MappedField(Fields.BATTERY, 1, "sagCompensatedVBat", ureg.centiV)
 
 #CURRENT = Field('current', ureg.amp, 4, description='motor currents')
 log_field_map["BATCurr"] = MappedField(Fields.CURRENT, 0, "BATCurr", ureg.A)
+log_field_map["BAT2Curr"] = MappedField(Fields.CURRENT, 1, "BAT2Curr", ureg.A)
 
 log_field_map["ARSPAirspeed"] = MappedField(
     Fields.AIRSPEED, 0, "ARSPAirspeed", ureg.meter / ureg.second)
@@ -124,5 +134,15 @@ log_field_map["NKF2VWN"] = MappedField(
     Fields.WIND, 0, "NKF2VWN", ureg.meter / ureg.second)
 log_field_map["NKF2VWE"] = MappedField(
     Fields.WIND, 1, "XKF2VWE", ureg.meter / ureg.second)
+
+log_field_map["RPMrpm1"] = MappedField(
+    Fields.RPM, 0, "RPMrpm1", 14 / ureg.minute)
+log_field_map["RPMrpm2"] = MappedField(
+    Fields.RPM, 1, "RPMrpm2", 14 / ureg.minute)
+
+
+log_field_map['MAGMagX'] = MappedField(Fields.MAGNETOMETER, 0, "MAGMagX", 1)
+log_field_map['MAGMagY'] = MappedField(Fields.MAGNETOMETER, 1, "MAGMagY", 1)
+log_field_map['MAGMagZ'] = MappedField(Fields.MAGNETOMETER, 2, "MAGMagZ", 1)
 
 ardupilot_ekfv2_io_info = FieldIOInfo(log_field_map)
