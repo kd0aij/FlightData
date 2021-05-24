@@ -132,8 +132,8 @@ class Flight(object):
         firstgps = gpsdata.loc[gpsdata.iloc[:, 2] > 5].iloc[0]
         # more than 5 satellites
         return {
-            'latitude': firstgps.latitude,
-            'longitude': firstgps.longitude
+            'latitude': firstgps.global_position_latitude,
+            'longitude': firstgps.global_position_longitude
         }
 
     def subset(self, start_time: float, end_time: float):
