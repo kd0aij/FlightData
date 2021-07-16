@@ -27,7 +27,7 @@ class TestFlightData(unittest.TestCase):
         flightcopy = self.flight.transform(funcdict)
         self.assertAlmostEqual(flightcopy.duration, 601, 0)
 
-    @unittest.skip("reading log from bin takes a bit longer")
+    # @unittest.skip("reading log from bin takes a bit longer")
     def test_to_from_csv(self):
         flight = Flight.from_log('test/ekfv3_test.BIN')
         flight.to_csv('temp.csv')

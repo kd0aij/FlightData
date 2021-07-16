@@ -75,6 +75,19 @@ log_field_map["XKF1PE"] = MappedField(Fields.POSITION, 1, "XKF1PE", ureg.meter)
 log_field_map["XKF1PD"] = MappedField(
     Fields.POSITION, 2, "XKF1PD", ureg.meter)
 
+#EKFATT = NKQ or XKQ, C, Q1,Q2,Q3,Q4
+# Field('q_body2ned', ureg.radians, 4, description='body to NED transform quaternion (w, x, y, z)', names=['Q1', 'Q2', 'Q3', 'Q4'])
+log_field_map["XKQC"] = MappedField(
+    Fields.QBODY2NED, 0, "XKQC", ureg.radians)
+log_field_map["XKQ1"] = MappedField(
+    Fields.QBODY2NED, 0, "XKQ1", ureg.radians)
+log_field_map["XKQ2"] = MappedField(
+    Fields.QBODY2NED, 0, "XKQ2", ureg.radians)
+log_field_map["XKQ3"] = MappedField(
+    Fields.QBODY2NED, 0, "XKQ3", ureg.radians)
+log_field_map["XKQ4"] = MappedField(
+    Fields.QBODY2NED, 0, "XKQ4", ureg.radians)
+
 #GLOBALPOSITION = Field('global_position', ureg.degrees, 3, names=['latitude', 'longitude', 'altitude'])
 log_field_map["GPSLat"] = MappedField(
     Fields.GLOBALPOSITION, 0, "GPSLat", ureg.degree)

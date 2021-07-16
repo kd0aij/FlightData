@@ -71,6 +71,7 @@ class Fields(object):
                            CIDTypes.ZONLY, names=['gps', 'baro'])
     ATTITUDE = Field('attitude', ureg.radian, 3, CIDTypes.EULER,
                      description='euler angles, order = yaw, pitch, roll', names=['roll', 'pitch', 'yaw'])
+    QBODY2NED = Field('q_body2ned', ureg.radians, 4, description='body to NED transform quaternion (c, w, x, y, z)', names=['Q1', 'Q2', 'Q3', 'Q4'])
     AXISRATE = Field('axis_rate', ureg.radian / ureg.second, 3, CIDTypes.BODY,
                      description='rotational velocities', names=['roll', 'pitch', 'yaw'])
     BATTERY = Field('battery', ureg.volt, 2, CIDTypes.NA,
